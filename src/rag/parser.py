@@ -10,10 +10,10 @@ class DiaryParser:
         self._diary_folder = diary_folder
         self._splitter = MarkdownHeaderTextSplitter(
             headers_to_split_on=[
-                ("#", "Category"),
+                ("# ", "Category"),
                 ("##", "Day of Week"),
-                ("- [ ]", "todo"),
-                ("- [x]", "completed todo"),
+                # ("- [ ]", "todo"),
+                # ("- [x]", "completed todo"),
                 ("-", "accomplishment"),
             ],
             strip_headers=True,
@@ -25,7 +25,7 @@ class DiaryParser:
             iterator_chain.from_iterable(files)
             .filter(lambda file: file.suffix == ".md")
             .map(lambda file: self._parse_file(file))
-            .flatten()
+            # .flatten()
             .list()
         )
 
