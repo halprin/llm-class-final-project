@@ -5,7 +5,8 @@ description = "Final Project for the LLM Class"
 readme = "README.md"
 requires-python = "==3.12.*"
 dependencies = [
-    "pytest>=8.4.2",
+    "iterator-chain>=1.1.0",
+    "langchain-text-splitters>=0.3.11",
 ]
 
 [dependency-groups]
