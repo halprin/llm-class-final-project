@@ -1,15 +1,74 @@
 from pathlib import Path
+import logging
+from typing import Any
 
 import iterator_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.documents import Document
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_ollama import ChatOllama
 
+from rag.database import Database
 from rag.parser import DiaryParser
 
 
 def main():
-    parser = DiaryParser(Path("data"))
-    documents = parser.parse()
-    iterator_chain.from_iterable(documents).for_each(print)
+    database = Database()
+    if not database.has_data():
+        logging.info("No data found in database. Adding documents.")
+        parser = DiaryParser(Path("data"))
+        documents = parser.parse()
+        database.add_documents(documents)
+
+    llm = ChatOllama(model="llama3.1:8b", temperature=0.1)
+    system_prompt = (
+        "You are providing answers to questions about goals, accomplishments, and tasks in a diary.  "
+        "Use only the following entries to answer the question.  Provide which entries you used to answer the question."
+        "Diary entries: {context}"
+    )
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", system_prompt),
+            ("human", "Question: {input}"),
+        ]
+    )
+
+    question_answer_chain = create_stuff_documents_chain(llm, prompt)
+
+    query = "What did I do that involved Ganba?"
+
+    logging.info(f"Query: {query}")
+    logging.info("Retrieving documents...")
+    retrieved_docs = database.retrieve_documents(query)
+
+    retrieved_docs = convert_pinecone_to_langchain(retrieved_docs)
+
+    logging.info("Running inference...")
+    output = question_answer_chain.invoke({"context": retrieved_docs, "input": query})
+    print(output)
+    print()
+
+
+def convert_pinecone_to_langchain(
+    pinecone_dictionaries: list[dict[str, Any]],
+) -> list[Document]:
+    return (
+        iterator_chain.from_iterable(pinecone_dictionaries)
+        .map(convert_single_pinecone_to_langchain)
+        .list()
+    )
+
+
+def convert_single_pinecone_to_langchain(
+    pinecone_dictionary: dict[str, Any],
+) -> Document:
+    page_content = pinecone_dictionary["fields"]["text"]
+    metadata = pinecone_dictionary["fields"]
+    del metadata["text"]
+
+    return Document(page_content=page_content, metadata=metadata)
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     main()
