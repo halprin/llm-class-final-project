@@ -2,7 +2,6 @@ import pytest
 from pathlib import Path
 import tempfile
 import shutil
-from langchain_core.documents import Document
 
 from rag.parser import DiaryParser
 
@@ -83,9 +82,9 @@ class TestDiaryParser:
         """Test parsing a single markdown file."""
         result = parser_with_data.parse()
 
-        # Should return list of Document objects
+        # Should return list of dict objects
         assert isinstance(result, list)
-        assert all(isinstance(doc, Document) for doc in result)
+        assert all(isinstance(doc, dict) for doc in result)
         assert len(result) > 0
 
     def test_parse_documents_contain_metadata(self, parser_with_data):
@@ -93,19 +92,19 @@ class TestDiaryParser:
         result = parser_with_data.parse()
 
         for doc in result:
-            assert "filename" in doc.metadata
-            assert doc.metadata["filename"] == "test_diary.md"
+            assert "filename" in doc
+            assert doc["filename"] == "test_diary.md"
 
     def test_parse_documents_with_categories(self, parser_with_data):
         """Test that documents contain category metadata from H1 headers."""
         result = parser_with_data.parse()
 
         # Find documents with categories
-        docs_with_categories = [doc for doc in result if "Category" in doc.metadata]
+        docs_with_categories = [doc for doc in result if "Category" in doc]
         assert len(docs_with_categories) > 0
 
         # Check that we have expected categories
-        categories = {doc.metadata["Category"] for doc in docs_with_categories}
+        categories = {doc["Category"] for doc in docs_with_categories}
         expected_categories = {"Goals", "Notes", "Tasks"}
         assert categories.intersection(expected_categories)
 
@@ -114,11 +113,11 @@ class TestDiaryParser:
         result = parser_with_data.parse()
 
         # Find documents with days
-        docs_with_days = [doc for doc in result if "Day of Week" in doc.metadata]
+        docs_with_days = [doc for doc in result if "Day of Week" in doc]
         assert len(docs_with_days) > 0
 
         # Check that we have expected days
-        days = {doc.metadata["Day of Week"] for doc in docs_with_days}
+        days = {doc["Day of Week"] for doc in docs_with_days}
         expected_days = {"Monday", "Tuesday"}
         assert days.intersection(expected_days)
 
@@ -127,10 +126,7 @@ class TestDiaryParser:
         result = parser_with_data.parse()
 
         # All documents should have non-empty content
-        assert all(doc.page_content.strip() for doc in result)
-
-        # Content should contain newlines (preserving structure)
-        assert any("\n" in doc.page_content for doc in result)
+        assert all(doc["text"].strip() for doc in result)
 
     def test_parse_multiple_markdown_files(self, temp_dir):
         """Test parsing multiple markdown files."""
@@ -151,7 +147,7 @@ class TestDiaryParser:
         result = parser.parse()
 
         # Should have documents from both files
-        filenames = {doc.metadata["filename"] for doc in result}
+        filenames = {doc["filename"] for doc in result}
         assert "diary1.md" in filenames
         assert "diary2.md" in filenames
 
@@ -178,7 +174,7 @@ Final text
         docs_with_both = [
             doc
             for doc in result
-            if "Category" in doc.metadata and "Day of Week" in doc.metadata
+            if "Category" in doc and "Day of Week" in doc
         ]
         assert len(docs_with_both) > 0
 
@@ -196,9 +192,9 @@ Regular text here too
         assert len(result) > 0
         # Documents should have filename but no Category or Day metadata
         for doc in result:
-            assert "filename" in doc.metadata
-            assert "Category" not in doc.metadata
-            assert "Day of Week" not in doc.metadata
+            assert "filename" in doc
+            assert "Category" not in doc
+            assert "Day of Week" not in doc
 
     def test_parse_empty_markdown_file(self, temp_dir):
         """Test parsing an empty markdown file."""
@@ -223,8 +219,8 @@ Regular text here too
         result = parser.parse()
 
         # Should strip whitespace from metadata
-        categories = {doc.metadata.get("Category") for doc in result}
-        days = {doc.metadata.get("Day of Week") for doc in result}
+        categories = {doc.get("Category") for doc in result}
+        days = {doc.get("Day of Week") for doc in result}
 
         assert "Goals" in categories
         assert "Monday" in days

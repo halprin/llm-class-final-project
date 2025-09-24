@@ -1,30 +1,50 @@
 import os
+import uuid
 
-from langchain_core.documents import Document
-from langchain_ollama import OllamaEmbeddings
-from langchain_pinecone import PineconeVectorStore
-from pinecone import Pinecone, ServerlessSpec
+import iterator_chain
+from pinecone import Pinecone, IndexEmbed
 
 
 class Database:
     def __init__(self):
-        index_name = "diary"
+        index_name = "diary2"
+        self._namespace = "diary"
         self._pinecone = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 
         if not self._pinecone.has_index(index_name):
-            self._pinecone.create_index(
+            self._pinecone.create_index_for_model(
                 name=index_name,
-                vector_type="dense",
-                dimension=4096,
-                metric="cosine",
-                spec=ServerlessSpec(cloud="aws", region="us-east-1"),
+                cloud="aws",
+                region="us-east-1",
+                embed=IndexEmbed(
+                    model="llama-text-embed-v2",
+                    field_map={"text": "text"},
+                    metric="cosine",
+                    read_parameters={"input_type": "query", "truncate": "NONE"},
+                    write_parameters={"input_type": "passage", "truncate": "NONE"},
+                ),
             )
         self._index = self._pinecone.Index(index_name)
-        self._embedder = OllamaEmbeddings(model="llama3.1:8b")
-        self._store = PineconeVectorStore(embedding=self._embedder, index=self._index)
+        # self._embedder = OllamaEmbeddings(model="llama3.1:8b")
+        # self._store = PineconeVectorStore(embedding=self._embedder, index=self._index)
 
-    def add_documents(self, documents: list[Document]):
-        self._store.add_documents(documents)
+    def add_documents(self, documents: list[dict[str, str]]):
+        documents = iterator_chain.from_iterable(documents).map(lambda document: {**document, "_id": str(uuid.uuid4())}).list()
+        self._index.upsert_records(self._namespace, documents)
+
+    def retrieve_documents(self, query: str) -> list[dict[str, str]]:
+        results = self._index.search(
+            namespace=self._namespace,
+            query={"top_k": 10, "inputs": {"text": query}},
+            fields=["*"],
+            rerank={
+                "model": "bge-reranker-v2-m3",
+                "top_n": 5,
+                "rank_fields": ["text"],
+            },
+         )
+
+        return results["result"]["hits"]
 
     def retriever(self):
         return self._store.as_retriever(search_kwargs={"k": 10, "score_threshold": 0.5})

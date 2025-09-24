@@ -5,14 +5,13 @@ import re
 from typing import Optional
 
 import iterator_chain
-from langchain_core.documents import Document
 
 
 class DiaryParser:
     def __init__(self, diary_folder: Path):
         self._diary_folder = diary_folder
 
-    def parse(self) -> list[Document]:
+    def parse(self) -> list[dict[str, str]]:
         logging.info(f"Parsing diary from {self._diary_folder}")
 
         files = self._diary_folder.iterdir()
@@ -26,13 +25,13 @@ class DiaryParser:
         # flatten
         return list(itertools.chain.from_iterable(list_of_list_of_documents))
 
-    def _parse_file(self, diary_file_path: Path) -> list[Document]:
+    def _parse_file(self, diary_file_path: Path) -> list[dict[str, str]]:
         logging.info(f"Parsing file {diary_file_path}")
 
         text = diary_file_path.read_text()
         lines = text.splitlines()
 
-        docs: list[Document] = []
+        docs: list[dict[str, str]] = []
         current_category: Optional[str] = None  # H1
         current_day: Optional[str] = None  # H2
         content = ""
@@ -56,26 +55,28 @@ class DiaryParser:
             if line.startswith("- "):
                 # we're starting a new item, finish the previous one
                 if content:
-                    metadata = {"filename": diary_file_path.name}
+                    doc_dict = {"filename": diary_file_path.name}
                     if current_category:
-                        metadata["Category"] = current_category
+                        doc_dict["Category"] = current_category
                     if current_day:
-                        metadata["Day of Week"] = current_day
+                        doc_dict["Day of Week"] = current_day
                     # trim whitespace
                     content = content.strip()
-                    docs.append(Document(page_content=content, metadata=metadata))
+                    doc_dict["text"] = content
+                    docs.append(doc_dict)
                 content = ""
 
             content += f"{line}\n"
 
         if content:
-            metadata = {"filename": diary_file_path.name}
+            doc_dict = {"filename": diary_file_path.name}
             if current_category:
-                metadata["Category"] = current_category
+                doc_dict["Category"] = current_category
             if current_day:
-                metadata["Day of Week"] = current_day
+                doc_dict["Day of Week"] = current_day
             # trim whitespace
             content = content.strip()
-            docs.append(Document(page_content=content, metadata=metadata))
+            doc_dict["text"] = content
+            docs.append(doc_dict)
 
         return docs
