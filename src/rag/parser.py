@@ -56,10 +56,12 @@ class DiaryParser:
                         metadata["Category"] = current_category
                     if current_day:
                         metadata["Day of Week"] = current_day
+                    # trim whitespace
+                    content = content.strip()
                     docs.append(Document(page_content=content, metadata=metadata))
                 content = ""
 
-            content += f"\n{line}"
+            content += f"{line}\n"
 
         if content:
             metadata = {"filename": diary_file_path.name}
@@ -67,6 +69,8 @@ class DiaryParser:
                 metadata["Category"] = current_category
             if current_day:
                 metadata["Day of Week"] = current_day
+            # trim whitespace
+            content = content.strip()
             docs.append(Document(page_content=content, metadata=metadata))
 
         return docs

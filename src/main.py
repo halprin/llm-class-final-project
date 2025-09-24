@@ -1,14 +1,15 @@
 from pathlib import Path
 
-import iterator_chain
-
+from rag.database import Database
 from rag.parser import DiaryParser
 
 
 def main():
     parser = DiaryParser(Path("data"))
     documents = parser.parse()
-    iterator_chain.from_iterable(documents).for_each(print)
+
+    database = Database()
+    database.add_documents(documents)
 
 
 if __name__ == "__main__":
