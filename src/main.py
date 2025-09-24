@@ -13,7 +13,6 @@ from rag.parser import DiaryParser
 
 
 def main():
-
     database = Database()
     if not database.has_data():
         logging.info("No data found in database. Adding documents.")
@@ -49,10 +48,20 @@ def main():
     print(output)
     print()
 
-def convert_pinecone_to_langchain(pinecone_dictionaries: list[dict[str, Any]]) -> list[Document]:
-    return iterator_chain.from_iterable(pinecone_dictionaries).map(convert_single_pinecone_to_langchain).list()
 
-def convert_single_pinecone_to_langchain(pinecone_dictionary: dict[str, Any]) -> Document:
+def convert_pinecone_to_langchain(
+    pinecone_dictionaries: list[dict[str, Any]],
+) -> list[Document]:
+    return (
+        iterator_chain.from_iterable(pinecone_dictionaries)
+        .map(convert_single_pinecone_to_langchain)
+        .list()
+    )
+
+
+def convert_single_pinecone_to_langchain(
+    pinecone_dictionary: dict[str, Any],
+) -> Document:
     page_content = pinecone_dictionary["fields"]["text"]
     metadata = pinecone_dictionary["fields"]
     del metadata["text"]

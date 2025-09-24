@@ -172,9 +172,7 @@ Final text
         assert len(result) > 0
         # Should have documents with both Category and Day metadata
         docs_with_both = [
-            doc
-            for doc in result
-            if "Category" in doc and "Day of Week" in doc
+            doc for doc in result if "Category" in doc and "Day of Week" in doc
         ]
         assert len(docs_with_both) > 0
 

@@ -25,11 +25,13 @@ class Database:
                 ),
             )
         self._index = self._pinecone.Index(index_name)
-        # self._embedder = OllamaEmbeddings(model="llama3.1:8b")
-        # self._store = PineconeVectorStore(embedding=self._embedder, index=self._index)
 
     def add_documents(self, documents: list[dict[str, str]]):
-        documents = iterator_chain.from_iterable(documents).map(lambda document: {**document, "_id": str(uuid.uuid4())}).list()
+        documents = (
+            iterator_chain.from_iterable(documents)
+            .map(lambda document: {**document, "_id": str(uuid.uuid4())})
+            .list()
+        )
         self._index.upsert_records(self._namespace, documents)
 
     def retrieve_documents(self, query: str) -> list[dict[str, str]]:
@@ -42,12 +44,9 @@ class Database:
                 "top_n": 5,
                 "rank_fields": ["text"],
             },
-         )
+        )
 
         return results["result"]["hits"]
-
-    def retriever(self):
-        return self._store.as_retriever(search_kwargs={"k": 10, "score_threshold": 0.5})
 
     def has_data(self) -> bool:
         return self._index.describe_index_stats()["total_vector_count"] > 0
