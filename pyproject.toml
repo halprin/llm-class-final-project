@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = "==3.12.*"
 dependencies = [
     "iterator-chain>=1.1.0",
+    "langchain>=0.3.27",
     "langchain-ollama>=0.3.8",
     "langchain-pinecone>=0.2.12",
     "langchain-text-splitters>=0.3.11",

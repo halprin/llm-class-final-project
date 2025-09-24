@@ -25,3 +25,9 @@ class Database:
 
     def add_documents(self, documents: list[Document]):
         self._store.add_documents(documents)
+
+    def retriever(self):
+        return self._store.as_retriever(search_kwargs={"k": 10, "score_threshold": 0.5})
+
+    def has_data(self) -> bool:
+        return self._index.describe_index_stats()["total_vector_count"] > 0

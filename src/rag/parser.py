@@ -1,4 +1,5 @@
 import itertools
+import logging
 from pathlib import Path
 import re
 from typing import Optional
@@ -12,6 +13,8 @@ class DiaryParser:
         self._diary_folder = diary_folder
 
     def parse(self) -> list[Document]:
+        logging.info(f"Parsing diary from {self._diary_folder}")
+
         files = self._diary_folder.iterdir()
         list_of_list_of_documents = (
             iterator_chain.from_iterable(files)
@@ -24,6 +27,8 @@ class DiaryParser:
         return list(itertools.chain.from_iterable(list_of_list_of_documents))
 
     def _parse_file(self, diary_file_path: Path) -> list[Document]:
+        logging.info(f"Parsing file {diary_file_path}")
+
         text = diary_file_path.read_text()
         lines = text.splitlines()
 
