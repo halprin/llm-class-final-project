@@ -40,9 +40,14 @@ def main():
         ]
     )
 
-    document_prompt = PromptTemplate(template="content: {page_content}, category: {Category}, day: {Day of Week}, filename: {filename}", input_variables=["page_content", "Category", "Day of Week", "filename"])
+    document_prompt = PromptTemplate(
+        template="content: {page_content}, category: {Category}, day: {Day of Week}, filename: {filename}",
+        input_variables=["page_content", "Category", "Day of Week", "filename"],
+    )
 
-    question_answer_chain = create_stuff_documents_chain(llm, prompt, document_prompt=document_prompt)
+    question_answer_chain = create_stuff_documents_chain(
+        llm, prompt, document_prompt=document_prompt
+    )
 
     query = "What did I do that involved Ganba?"
 
