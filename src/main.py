@@ -7,7 +7,6 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_aws import ChatBedrockConverse
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
-from langchain_ollama import ChatOllama
 
 from rag.database import Database
 from rag.parser import DiaryParser
@@ -21,7 +20,6 @@ def main():
         documents = parser.parse()
         database.add_documents(documents)
 
-    # llm = ChatOllama(model="llama3.1:8b", temperature=0.1)
     llm = ChatBedrockConverse(
         model="global.anthropic.claude-sonnet-4-20250514-v1:0",
         temperature=0.1,

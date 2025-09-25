@@ -9,7 +9,6 @@ dependencies = [
     "iterator-chain>=1.1.0",
     "langchain>=0.3.27",
     "langchain-aws>=0.2.33",
-    "langchain-ollama>=0.3.8",
     "pinecone>=7.3.0",
 ]
 
