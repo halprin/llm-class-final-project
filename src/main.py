@@ -6,7 +6,7 @@ import iterator_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_aws import ChatBedrockConverse
 from langchain_core.documents import Document
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_ollama import ChatOllama
 
 from rag.database import Database
@@ -30,7 +30,7 @@ def main():
 
     system_prompt = (
         "You are providing answers to questions about goals, accomplishments, and tasks in a diary.  "
-        "Use only the following entries to answer the question.  Provide which entries and their filename you used to answer the question."
+        "Use only the following entries to answer the question.  Provide which entries, their category, their day of week, and filename you used to answer the question."
         "Diary entries: {context}"
     )
     prompt = ChatPromptTemplate.from_messages(
@@ -40,7 +40,9 @@ def main():
         ]
     )
 
-    question_answer_chain = create_stuff_documents_chain(llm, prompt)
+    document_prompt = PromptTemplate(template="content: {page_content}, category: {Category}, day: {Day of Week}, filename: {filename}", input_variables=["page_content", "Category", "Day of Week", "filename"])
+
+    question_answer_chain = create_stuff_documents_chain(llm, prompt, document_prompt=document_prompt)
 
     query = "What did I do that involved Ganba?"
 
