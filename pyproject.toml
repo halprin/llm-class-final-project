@@ -5,8 +5,10 @@ description = "Final Project for the LLM Class"
 readme = "README.md"
 requires-python = "==3.12.*"
 dependencies = [
+    "boto3>=1.40.38",
     "iterator-chain>=1.1.0",
     "langchain>=0.3.27",
+    "langchain-aws>=0.2.33",
     "langchain-ollama>=0.3.8",
     "pinecone>=7.3.0",
 ]

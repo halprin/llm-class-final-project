@@ -4,6 +4,7 @@ from typing import Any
 
 import iterator_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_aws import ChatBedrockConverse
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
@@ -20,10 +21,16 @@ def main():
         documents = parser.parse()
         database.add_documents(documents)
 
-    llm = ChatOllama(model="llama3.1:8b", temperature=0.1)
+    # llm = ChatOllama(model="llama3.1:8b", temperature=0.1)
+    llm = ChatBedrockConverse(
+        model="global.anthropic.claude-sonnet-4-20250514-v1:0",
+        temperature=0.1,
+        region_name="us-east-1",
+    )
+
     system_prompt = (
         "You are providing answers to questions about goals, accomplishments, and tasks in a diary.  "
-        "Use only the following entries to answer the question.  Provide which entries you used to answer the question."
+        "Use only the following entries to answer the question.  Provide which entries and their filename you used to answer the question."
         "Diary entries: {context}"
     )
     prompt = ChatPromptTemplate.from_messages(
