@@ -17,6 +17,8 @@ provider "aws" {
   region = "us-east-1"
 
   default_tags {
-    project = "halprin-llm-class-final-project"
+    tags = {
+      project = "halprin-llm-class-final-project"
+    }
   }
 }
