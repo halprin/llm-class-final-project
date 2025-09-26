@@ -111,7 +111,7 @@ resource "aws_ecs_task_definition" "app" {
       environment = [
         {
           name  = "PINECONE_API_KEY"
-          value = ""
+          value = var.pinecone_api_key
         }
       ]
     }
