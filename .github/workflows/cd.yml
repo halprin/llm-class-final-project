@@ -34,3 +34,19 @@ jobs:
       - name: Terraform Apply
         working-directory: ./iac/
         run: terraform apply -auto-approve  -var 'domain=${{ secrets.PINECONE_API_KEY }}'
+
+      - name: Get ECR Repository URL
+        working-directory: ./iac/
+        id: terraform-output
+        run: |
+          ECR_URL=$(terraform output -raw ecr_repository_url)
+          echo "ecr_url=$ECR_URL" >> $GITHUB_OUTPUT
+
+      - name: Login to Amazon ECR
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ steps.terraform-output.outputs.ecr_url }}
+
+      - name: Build Docker Image
+        run: docker build -t ${{ steps.terraform-output.outputs.ecr_url }}:latest .
+
+      - name: Push Docker Image to ECR
+        run: docker push ${{ steps.terraform-output.outputs.ecr_url }}:latest
