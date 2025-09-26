@@ -33,4 +33,4 @@ jobs:
 
       - name: Terraform Apply
         working-directory: ./iac/
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve  -var 'domain=${{ secrets.PINECONE_API_KEY }}'
