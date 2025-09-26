@@ -1,6 +1,6 @@
 # Security group for ALB
 resource "aws_security_group" "alb" {
-  name_prefix = "alb-"
+  name_prefix = "halprin-alb-"
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
@@ -22,18 +22,17 @@ resource "aws_security_group" "alb" {
 
 # Application Load Balancer
 resource "aws_lb" "app" {
-  name               = "llm-class-final-alb"
+  name               = "halprin-llm-class-final-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
   subnets           = data.aws_subnets.default.ids
 
-  enable_deletion_protection = false  # For cost savings and easy cleanup
+  enable_deletion_protection = false
 }
 
-# Target Group for ECS service
 resource "aws_lb_target_group" "app" {
-  name        = "llm-class-final-tg"
+  name        = "halprin-llm-class-final-tg"
   port        = 8501
   protocol    = "HTTP"
   vpc_id      = data.aws_vpc.default.id
@@ -52,7 +51,6 @@ resource "aws_lb_target_group" "app" {
   }
 }
 
-# ALB Listener
 resource "aws_lb_listener" "app" {
   load_balancer_arn = aws_lb.app.arn
   port              = "80"

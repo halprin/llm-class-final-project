@@ -1,18 +1,18 @@
 resource "aws_ecs_cluster" "cluster" {
-  name = "llm-class-final-cluster"
+  name = "halprin-llm-class-final-cluster"
 }
 
 resource "aws_ecs_service" "app" {
-  name            = "llm-class-final-service"
+  name            = "halprin-llm-class-final-service"
   cluster         = aws_ecs_cluster.cluster.id
   task_definition = aws_ecs_task_definition.app.arn
-  desired_count   = 1  # Single task as requested
+  desired_count   = 1
   launch_type     = "FARGATE"
 
   network_configuration {
     security_groups  = [aws_security_group.ecs_tasks.id]
-    subnets         = data.aws_subnets.default.ids
-    assign_public_ip = true  # Required for Fargate in public subnets
+    subnets          = data.aws_subnets.default.ids
+    assign_public_ip = true
   }
 
   load_balancer {
@@ -24,12 +24,10 @@ resource "aws_ecs_service" "app" {
   depends_on = [aws_lb_listener.app]
 }
 
-# Get default VPC
 data "aws_vpc" "default" {
   default = true
 }
 
-# Get default subnets
 data "aws_subnets" "default" {
   filter {
     name   = "vpc-id"
@@ -39,7 +37,7 @@ data "aws_subnets" "default" {
 
 # Security group for ECS tasks
 resource "aws_security_group" "ecs_tasks" {
-  name_prefix = "ecs-tasks-"
+  name_prefix = "halprin-ecs-tasks-"
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
@@ -84,7 +82,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
 
 # ECS Task Definition - Cheapest configuration
 resource "aws_ecs_task_definition" "app" {
-  family                   = "llm-class-final-app"
+  family                   = "halprin-llm-class-final-app"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"  # 0.25 vCPU - cheapest option
@@ -94,7 +92,7 @@ resource "aws_ecs_task_definition" "app" {
   container_definitions = jsonencode([
     {
       name  = "app"
-      image = "ghcr.io/astral-sh/uv:python3.12-alpine"  # Will be updated with actual image
+      image = "${aws_ecr_repository.app.repository_url}:latest"
       portMappings = [
         {
           containerPort = 8501
@@ -121,6 +119,6 @@ resource "aws_ecs_task_definition" "app" {
 }
 
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
-  name              = "/ecs/llm-class-final-app"
+  name              = "/ecs/halprin-llm-class-final-app"
   retention_in_days = 365
 }
