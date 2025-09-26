@@ -33,7 +33,7 @@ jobs:
 
       - name: Terraform Apply
         working-directory: ./iac/
-        run: terraform apply -auto-approve  -var 'domain=${{ secrets.PINECONE_API_KEY }}'
+        run: terraform apply -auto-approve  -var 'pinecone_api_key=${{ secrets.PINECONE_API_KEY }}'
 
       - name: Get ECR Repository URL
         working-directory: ./iac/
