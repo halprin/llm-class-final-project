@@ -1,0 +1,33 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+
+      - uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_FOR_DEPLOY }}
+          aws-region: us-east-1
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - uses: actions/checkout@v5
+
+      - name: Terraform Init
+        working-directory: ./iac/
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: ./iac/
+        run: terraform apply -auto-approve
