@@ -1,11 +1,4 @@
 import logging
-import os
-import sys
-
-# add the current working directory to the Python path
-cwd = os.getcwd()
-if cwd not in sys.path:
-    sys.path.insert(0, cwd)
 
 import streamlit as st
 
