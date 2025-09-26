@@ -10,6 +10,8 @@ dependencies = [
     "langchain>=0.3.27",
     "langchain-aws>=0.2.33",
     "pinecone>=7.3.0",
+    "streamlit>=1.50.0",
+    "watchdog>=6.0.0",
 ]
 
 [dependency-groups]
