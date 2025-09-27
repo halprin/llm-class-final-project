@@ -5,7 +5,7 @@ from llm import Llm
 from rag.database import Database
 
 
-def main():
+def demo():
     mock_model = Mock(spec=Llm)
     mock_database = Mock(spec=Database)
 
@@ -24,8 +24,10 @@ def main():
 
     evaluator = Evaluator(mock_model, dataset, mock_database)
 
-    evaluator.evaluate()
+    evaluation = evaluator.evaluate()
+
+    print(f"Evaluation score: {evaluation}")
 
 
 if __name__ == '__main__':
-    main()
+    demo()
