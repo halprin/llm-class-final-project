@@ -1,9 +1,9 @@
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 
-from src.evaluator import Evaluator
-from src.llm import Llm
-from src.rag.database import Database
+from evaluator import Evaluator
+from llm import Llm
+from rag.database import Database
 
 
 class TestEvaluator:
@@ -40,7 +40,7 @@ class TestEvaluator:
         mock_metric.compute.return_value = {"rougeL": 0.85}
         return mock_metric
 
-    @patch("src.evaluator.load")
+    @patch("evaluator.load")
     def test_evaluator_init(
         self, mock_load, mock_model, mock_database, sample_dataset, mock_metric
     ):
@@ -55,7 +55,7 @@ class TestEvaluator:
         mock_load.assert_called_once_with("rouge")
         assert evaluator._metric == mock_metric
 
-    @patch("src.evaluator.load")
+    @patch("evaluator.load")
     def test_evaluate_single_datapoint(
         self, mock_load, mock_model, mock_database, mock_metric
     ):
@@ -87,7 +87,7 @@ class TestEvaluator:
             references=["Your goals are important."],
         )
 
-    @patch("src.evaluator.load")
+    @patch("evaluator.load")
     def test_evaluate_multiple_datapoints(
         self, mock_load, mock_model, mock_database, sample_dataset, mock_metric
     ):
@@ -132,7 +132,7 @@ class TestEvaluator:
             ],
         )
 
-    @patch("src.evaluator.load")
+    @patch("evaluator.load")
     def test_evaluate_empty_dataset(
         self, mock_load, mock_model, mock_database, mock_metric
     ):
@@ -151,7 +151,7 @@ class TestEvaluator:
         mock_model.stream.assert_not_called()
         mock_metric.compute.assert_called_once_with(predictions=[], references=[])
 
-    @patch("src.evaluator.load")
+    @patch("evaluator.load")
     def test_evaluate_empty_stream_response(
         self, mock_load, mock_model, mock_database, mock_metric
     ):
@@ -175,7 +175,7 @@ class TestEvaluator:
             references=["expected response"],
         )
 
-    @patch("src.evaluator.load")
+    @patch("evaluator.load")
     def test_evaluate_single_chunk_response(
         self, mock_load, mock_model, mock_database, mock_metric
     ):
@@ -199,7 +199,7 @@ class TestEvaluator:
             references=["expected response"],
         )
 
-    @patch("src.evaluator.load")
+    @patch("evaluator.load")
     def test_evaluate_preserves_order(
         self, mock_load, mock_model, mock_database, mock_metric
     ):
@@ -235,7 +235,7 @@ class TestEvaluator:
             references=["first expected", "second expected", "third expected"],
         )
 
-    @patch("src.evaluator.load")
+    @patch("evaluator.load")
     def test_stream_concatenation(
         self, mock_load, mock_model, mock_database, mock_metric
     ):
