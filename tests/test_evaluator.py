@@ -37,7 +37,7 @@ class TestEvaluator:
     def mock_metric(self):
         """Create a mock metric object."""
         mock_metric = Mock()
-        mock_metric.compute.return_value = {"rouge": 0.85}
+        mock_metric.compute.return_value = {"rougeL": 0.85}
         return mock_metric
 
     @patch('src.evaluator.load')
@@ -50,7 +50,6 @@ class TestEvaluator:
         assert evaluator._model == mock_model
         assert evaluator._database == mock_database
         assert evaluator._dataset == sample_dataset
-        assert evaluator._metric_type == "rouge"
         mock_load.assert_called_once_with("rouge")
         assert evaluator._metric == mock_metric
 

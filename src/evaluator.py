@@ -30,4 +30,4 @@ class Evaluator:
 
         metric = self._metric.compute(predictions=actuals, references=expecteds)
 
-        return metric["rogueL"]
+        return metric["rougeL"]
