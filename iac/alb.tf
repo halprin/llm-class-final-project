@@ -1,4 +1,3 @@
-# Security group for ALB
 resource "aws_security_group" "alb" {
   name_prefix = "halprin-alb-"
   vpc_id      = data.aws_vpc.default.id
@@ -20,7 +19,6 @@ resource "aws_security_group" "alb" {
   }
 }
 
-# Application Load Balancer
 resource "aws_lb" "app" {
   name               = "halprin-llm-class-final-alb"
   internal           = false
