@@ -5,7 +5,7 @@ from rag.database import Database
 
 
 class Evaluator:
-    def __init__(self, model: Llm, dataset, database: Database):
+    def __init__(self, model: Llm, dataset: list[dict[str, str]], database: Database):
         self._model = model
         self._database = database
         self._dataset = dataset
