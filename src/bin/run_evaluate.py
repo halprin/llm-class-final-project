@@ -15,16 +15,19 @@ def main():
 def _evaluate_model(model_name: str):
     llm = Llm(model_name)
     database = Database()
-    dataset = [{
-        "prompt": "What did I accomplish on March 6, 2023?",
-        "expected": "You did nothing",
-    }, {
-        "prompt": "What kind of tasks did I with halprin?",
-        "expected": "There are three things you did with halprin.  "
-                    "March 7, 2023: You reviewed their PR.  "
-                    "March 8, 2023: You collaborated with them writing some Terraform.  "
-                    "March 9, 2023: halprin asked for you help on a PoC.",
-    }]
+    dataset = [
+        {
+            "prompt": "What did I accomplish on March 6, 2023?",
+            "expected": "You did nothing",
+        },
+        {
+            "prompt": "What kind of tasks did I with halprin?",
+            "expected": "There are three things you did with halprin.  "
+            "March 7, 2023: You reviewed their PR.  "
+            "March 8, 2023: You collaborated with them writing some Terraform.  "
+            "March 9, 2023: halprin asked for you help on a PoC.",
+        },
+    ]
 
     evaluator = Evaluator(llm, dataset, database)
 
@@ -39,16 +42,19 @@ def demo():
 
     mock_model.stream.side_effect = [iter(["Nothing"]), iter(["Three things"])]
 
-    dataset = [{
-        "prompt": "What did I accomplish on March 6, 2023?",
-        "expected": "You did nothing",
-    }, {
-        "prompt": "What kind of tasks did I with halprin?",
-        "expected": "There are three things you did with halprin.  "
-                    "March 7, 2023: You reviewed their PR.  "
-                    "March 8, 2023: You collaborated with them writing some Terraform.  "
-                    "March 9, 2023: halprin asked for you help on a PoC.",
-    }]
+    dataset = [
+        {
+            "prompt": "What did I accomplish on March 6, 2023?",
+            "expected": "You did nothing",
+        },
+        {
+            "prompt": "What kind of tasks did I with halprin?",
+            "expected": "There are three things you did with halprin.  "
+            "March 7, 2023: You reviewed their PR.  "
+            "March 8, 2023: You collaborated with them writing some Terraform.  "
+            "March 9, 2023: halprin asked for you help on a PoC.",
+        },
+    ]
 
     evaluator = Evaluator(mock_model, dataset, mock_database)
 
@@ -57,5 +63,5 @@ def demo():
     print(f"Evaluation score: {evaluation}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()
