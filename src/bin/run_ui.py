@@ -66,6 +66,7 @@ def main():
             except Exception as e:
                 error_message = f"Sorry, I encountered an error: {str(e)}"
                 message_placeholder.markdown(error_message)
+                logging.exception(e)
                 full_response = error_message
 
         # Add assistant response to chat history
