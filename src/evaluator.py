@@ -9,8 +9,7 @@ class Evaluator:
         self._model = model
         self._database = database
         self._dataset = dataset
-        self._metric_type = "rouge"
-        self._metric = load(self._metric_type)
+        self._metric = load("rouge")
 
     def evaluate(self):
         expecteds = []
@@ -31,4 +30,4 @@ class Evaluator:
 
         metric = self._metric.compute(predictions=actuals, references=expecteds)
 
-        return metric[self._metric_type]
+        return metric["rogueL"]

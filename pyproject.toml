@@ -10,7 +10,9 @@ dependencies = [
     "iterator-chain>=1.1.0",
     "langchain>=0.3.27",
     "langchain-aws>=0.2.33",
+    "nltk>=3.9.1",
     "pinecone>=7.3.0",
+    "rouge-score>=0.1.2",
     "streamlit>=1.50.0",
     "watchdog>=6.0.0",
 ]
