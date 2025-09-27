@@ -17,7 +17,7 @@ def initialize_llm_components():
 
 
 def main():
-    st.title("📓 Diary Chat Assistant TEST!")
+    st.title("📓 Diary Chat Assistant")
     st.write(
         "Ask questions about goals, accomplishments, and tasks from your diary entries."
     )
