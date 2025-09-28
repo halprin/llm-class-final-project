@@ -36,7 +36,7 @@ def main():
         "us.anthropic.claude-sonnet-4-20250514-v1:0",  # DeepSeek R1
         "us.meta.llama3-2-90b-instruct-v1:0",  # Llama 3.2 90B
         "us.meta.llama3-1-8b-instruct-v1:0",  # Llama 3.1 8B
-        "`openai.gpt-oss-120b-1:0`",  # GPT OSS 120B
+        "openai.gpt-oss-120b-1:0",  # GPT OSS 120B
     ]
     iterator_chain.from_iterable_parallel(model_names).for_each(_evaluate_model)
 
