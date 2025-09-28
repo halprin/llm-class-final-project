@@ -30,8 +30,6 @@ class Evaluator:
 
             actuals.append(full_response)
 
-        metric = self._metric.compute(predictions=actuals, references=expecteds)
-
         print("")  # print the newline
 
-        return metric
+        return self._metric.compute(predictions=actuals, references=expecteds)
