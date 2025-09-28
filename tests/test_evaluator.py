@@ -77,7 +77,7 @@ class TestEvaluator:
         result = evaluator.evaluate()
 
         # Verify
-        assert result == 0.85
+        assert result == {"rougeL": 0.85}
         mock_database.retrieve_documents.assert_called_once_with("What are my goals?")
         mock_model.stream.assert_called_once_with(
             "What are my goals?", [{"text": "sample document", "category": "goals"}]
@@ -110,7 +110,7 @@ class TestEvaluator:
         result = evaluator.evaluate()
 
         # Verify
-        assert result == 0.85
+        assert result == {"rougeL": 0.85}
         assert mock_database.retrieve_documents.call_count == 2
         assert mock_model.stream.call_count == 2
 
@@ -146,7 +146,7 @@ class TestEvaluator:
         result = evaluator.evaluate()
 
         # Verify
-        assert result == 0.85
+        assert result == {"rougeL": 0.85}
         mock_database.retrieve_documents.assert_not_called()
         mock_model.stream.assert_not_called()
         mock_metric.compute.assert_called_once_with(predictions=[], references=[])
@@ -169,7 +169,7 @@ class TestEvaluator:
         result = evaluator.evaluate()
 
         # Verify
-        assert result == 0.85
+        assert result == {"rougeL": 0.85}
         mock_metric.compute.assert_called_once_with(
             predictions=[""],  # Empty string from empty stream
             references=["expected response"],
@@ -193,7 +193,7 @@ class TestEvaluator:
         result = evaluator.evaluate()
 
         # Verify
-        assert result == 0.85
+        assert result == {"rougeL": 0.85}
         mock_metric.compute.assert_called_once_with(
             predictions=["Complete response in one chunk"],
             references=["expected response"],
@@ -229,7 +229,7 @@ class TestEvaluator:
         result = evaluator.evaluate()
 
         # Verify order is preserved
-        assert result == 0.85
+        assert result == {"rougeL": 0.85}
         mock_metric.compute.assert_called_once_with(
             predictions=["first response", "second response", "third response"],
             references=["first expected", "second expected", "third expected"],
@@ -255,7 +255,7 @@ class TestEvaluator:
         result = evaluator.evaluate()
 
         # Verify concatenation
-        assert result == 0.85
+        assert result == {"rougeL": 0.85}
         mock_metric.compute.assert_called_once_with(
             predictions=["Hello world! How are you?"],
             references=["Hello world! How are you?"],
