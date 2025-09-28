@@ -37,6 +37,7 @@ def main():
 
 
 def _evaluate_model(model_name: str):
+    print(f"Evaluating model: {model_name}")
     llm = Llm(model_name)
     database = Database()
     dataset = _load_dataset_from_csv()
@@ -76,4 +77,4 @@ def demo():
 
 
 if __name__ == "__main__":
-    demo()
+    main()
