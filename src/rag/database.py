@@ -40,11 +40,11 @@ class Database:
     def retrieve_documents(self, query: str) -> list[dict[str, str]]:
         results = self._index.search(
             namespace=self._namespace,
-            query={"top_k": 10, "inputs": {"text": query}},
+            query={"top_k": 20, "inputs": {"text": query}},
             fields=["*"],
             rerank={
                 "model": "bge-reranker-v2-m3",
-                "top_n": 5,
+                "top_n": 15,
                 "rank_fields": ["text"],
             },
         )
