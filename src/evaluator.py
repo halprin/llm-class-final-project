@@ -11,7 +11,7 @@ class Evaluator:
         self._dataset = dataset
         self._metric = load("rouge")
 
-    def evaluate(self):
+    def evaluate(self) -> dict[str, float]:
         expecteds = []
         actuals = []
 
@@ -30,4 +30,4 @@ class Evaluator:
 
         metric = self._metric.compute(predictions=actuals, references=expecteds)
 
-        return metric["rougeL"]
+        return metric
