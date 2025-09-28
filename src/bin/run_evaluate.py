@@ -30,10 +30,10 @@ def _load_dataset_from_csv():
 
 def main():
     model_names = [
-        "global.anthropic.claude-sonnet-4-20250514-v1:0",
-        # "something else",
+        "us.anthropic.claude-sonnet-4-20250514-v1:0",
+        "us.anthropic.claude-opus-4-1-20250805-v1:0",
     ]
-    iterator_chain.from_iterable(model_names).for_each(_evaluate_model)
+    iterator_chain.from_iterable_parallel(model_names).for_each(_evaluate_model)
 
 
 def _evaluate_model(model_name: str):
