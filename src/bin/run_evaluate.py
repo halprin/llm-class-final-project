@@ -10,11 +10,6 @@ from rag.database import Database
 
 
 def _load_dataset_from_csv():
-    """Load dataset from evaluation.csv file."""
-    # csv_path = os.path.join(
-    #     os.path.dirname(__file__), "..", "..", "data", "evaluation.csv"
-    # )
-
     csv_path = os.path.join("data", "evaluation.csv")
 
     dataset = []
