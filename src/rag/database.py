@@ -1,3 +1,4 @@
+import itertools
 import os
 import uuid
 
@@ -32,16 +33,18 @@ class Database:
             .map(lambda document: {**document, "_id": str(uuid.uuid4())})
             .list()
         )
-        self._index.upsert_records(self._namespace, documents)
+
+        for documents_chunk in self._chunks(documents):
+            self._index.upsert_records(self._namespace, documents_chunk)
 
     def retrieve_documents(self, query: str) -> list[dict[str, str]]:
         results = self._index.search(
             namespace=self._namespace,
-            query={"top_k": 10, "inputs": {"text": query}},
+            query={"top_k": 20, "inputs": {"text": query}},
             fields=["*"],
             rerank={
                 "model": "bge-reranker-v2-m3",
-                "top_n": 5,
+                "top_n": 15,
                 "rank_fields": ["text"],
             },
         )
@@ -50,3 +53,11 @@ class Database:
 
     def has_data(self) -> bool:
         return self._index.describe_index_stats()["total_vector_count"] > 0
+
+    def _chunks(self, iterable, batch_size=96):
+        """A helper function to break an iterable into chunks of size batch_size."""
+        it = iter(iterable)
+        chunk = list(itertools.islice(it, batch_size))
+        while chunk:
+            yield chunk
+            chunk = list(itertools.islice(it, batch_size))

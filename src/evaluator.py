@@ -11,11 +11,13 @@ class Evaluator:
         self._dataset = dataset
         self._metric = load("rouge")
 
-    def evaluate(self):
+    def evaluate(self) -> dict[str, float]:
         expecteds = []
         actuals = []
 
         for datapoint in self._dataset:
+            print(".", end="")
+
             expecteds.append(datapoint["expected"])
 
             prompt = datapoint["prompt"]
@@ -28,6 +30,6 @@ class Evaluator:
 
             actuals.append(full_response)
 
-        metric = self._metric.compute(predictions=actuals, references=expecteds)
+        print("")  # print the newline
 
-        return metric["rougeL"]
+        return self._metric.compute(predictions=actuals, references=expecteds)
