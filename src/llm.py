@@ -8,7 +8,7 @@ from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 
 
 class Llm:
-    def __init__(self, model_name="us.anthropic.claude-sonnet-4-20250514-v1:0"):
+    def __init__(self, model_name="us.meta.llama3-2-90b-instruct-v1:0"):
         basle_llm = ChatBedrockConverse(
             model=model_name,
             temperature=0.1,
