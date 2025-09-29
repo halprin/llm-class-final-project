@@ -8,7 +8,7 @@ from pinecone import Pinecone, IndexEmbed
 
 class Database:
     def __init__(self):
-        index_name = "diary2"
+        index_name = "diary"
         self._namespace = "diary"
         self._pinecone = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 
