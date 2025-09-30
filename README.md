@@ -152,7 +152,7 @@ models.
 - Meta Llama 3.1 8B.
 - OpenAI GPT OSS 120B.
 
-See [Using a Different Model](#using-a-different-model) below.
+See [Using a Different Model](#using-a-different-model-through-better-evaluation) below.
 
 ### Using Fake Data
 
